@@ -20,7 +20,7 @@ gradebk = read_csv('Gradebook.csv')
 # ========= Cleaning ==========================
 
 # Eliminate irrelevant columns
-gradebk = gradebk[ , -c(2, 25, 33:34)]
+gradebk = gradebk[, -2]
 
 # Strip whitespace
 for (i in c(which(sapply(gradebk, class) == 'character'))) {
@@ -37,7 +37,7 @@ for (i in c(which(sapply(gradebk, class) == 'character'))) {
 # ========= Reformatting ======================
 
 # Subset by class tracks (Math/STS 50; Math 112)
-math_track = gradebk[which(gradebk$Track == 112), -21]
+math_track = gradebk[which(gradebk$Track == 112), -22]
 read_track = gradebk[which(gradebk$Track == 50), ]
 
 
@@ -73,25 +73,26 @@ pset.stats <- function( df ) {
   out7 = strsplit(df$HW7, '/')
   out9 = strsplit(df$HW9, '/')
   out11 = strsplit(df$HW11, '/')
+  out13 = strsplit(df$HW13, '/')
   
   # Bind all split columns together
-  for (i in c(1, 2, 3, 4, 5, 6, 7, 9, 11)) {
+  for (i in c(1, 2, 3, 4, 5, 6, 7, 9, 11, 13)) {
     temp = do.call(rbind, get(paste0('out', as.character(i))))
     assign(paste0('temp', as.character(i)), temp)
   }
   
-  ps_df = cbind(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp9, temp11)
-  rm(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp9, temp11,
-     out1, out2, out3, out4, out5, out6, out7, out9, out11, temp, df)
+  ps_df = cbind(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp9, temp11, temp13)
+  rm(temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp9, temp11, temp13,
+     out1, out2, out3, out4, out5, out6, out7, out9, out11, out13, temp, df)
   
   # Populate stats
   for (i in 1:nrow(ps_df)) {
     
     # Get student's problem set % scores average
     # Appropriately handle NA's & '0' scores
-    numerator = sum(as.numeric(as.character(ps_df[i, c(1, 3, 5, 7, 9, 11, 13, 15, 17)])), 
+    numerator = sum(as.numeric(as.character(ps_df[i, c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19)])), 
                     na.rm = TRUE)
-    denominator = sum(as.numeric(as.character(ps_df[i, c(2, 4, 6, 8, 10, 12, 14, 16, 18)])), 
+    denominator = sum(as.numeric(as.character(ps_df[i, c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20)])), 
                       na.rm = TRUE)
     
     # Store value in output vector
@@ -124,12 +125,12 @@ rr.stats <- function( df ) {
   if ('RR10' %in% colnames(df)) {
     
     # Appropriate columns for reading track (Math/STS 50)
-    rr_df = df[, c(12:23)]
+    rr_df = df[, c(13:25)]
     
   } else {
     
     # Appropriate columns for math track (Math 112)
-    rr_df = df[, c(12:22)]
+    rr_df = df[, c(13:24)]
   }
   
   # Populate stats
@@ -164,7 +165,7 @@ quiz.stats <- function(df) {
   stats = rep(0.0, nrow(df))
   
   # Get columns containing quiz scores
-  df = df[, 24:30]
+  df = df[, 26:30]
   
   # Populate stats
   for (i in 1:nrow(df)) {
